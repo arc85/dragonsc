@@ -1,0 +1,1010 @@
+irlba::prcomp_irlba()
+irlba
+help(package="irlba")
+eigen(cov(pca.components[em_results[["clusters"]]=="1",]))*2
+eigen(cov(pca.components[em_results[["clusters"]]=="1",]))$values*2
+eigen(cov(pca.components[em_results[["clusters"]]=="1",]))$values[1]*2
+eigen(cov(pca.components[em_results[["clusters"]]=="2",]))$values[1]*2
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",])
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",])^2
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",])$sdev^2
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="2",])$sdev^2
+help(package='irlba')
+irlba::partial_eigen(pca.components[em_results[["clusters"]]=="1",],n=1)
+irlba::partial_eigen(cov(pca.components[em_results[["clusters"]]=="1",],n=1))
+irlba::partial_eigen(cov(pca.components[em_results[["clusters"]]=="1",]),n=1)
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="2",])$sdev^2
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",],n=1)$sdev^2
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",],n=1)
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",],n=1)$sdev^2
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="2",],n=1)$sdev^2
+irlba::prcomp_irlba(scale(pca.components[em_results[["clusters"]]=="1",]),n=1,.scale=F,center=F)$sdev^2*2
+irlba::prcomp_irlba(scale(pca.components[em_results[["clusters"]]=="1",]),n=1,.scale=F,center=F)$sdev^2
+irlba::prcomp_irlba(scale(pca.components[em_results[["clusters"]]=="2",],n=1))$sdev^2*2
+irlba::prcomp_irlba(scale(pca.components[em_results[["clusters"]]=="2",]),n=1)$sdev^2*2
+irlba::prcomp_irlba(scale(pca.components[em_results[["clusters"]]=="2",]),n=1,.scale=F,center=F)$sdev^2*2
+eigen(cov(pca.components[em_results[["clusters"]]=="2",]))$values[1]*2
+irlba::prcomp_irlba(scale(pca.components[em_results[["clusters"]]=="1",]),n=1,.scale=F,center=F)$sdev^2*2
+eigen(cov(pca.components[em_results[["clusters"]]=="2",]))$values[1]*2
+eigen(cov(pca.components[em_results[["clusters"]]=="1",]))$values[1]*2
+decay.step[1,2]
+decay.step[2,2]
+split.clusters <- cluster_split(pca.components,em_results[["maximization"]],em_results[["clusters"]],temperature=27,decay.step[2,2],max.clusters=8)
+split.clusters <- cluster_split(pca.components,em_results[["maximization"]],em_results[["clusters"]],temperature=27,decay.step[2,],max.clusters=8)
+pca.components
+mean(pca.components[,1])
+mean(pca.components[,2])
+mean(pca.components[,3])
+sd(pca.components[,3])
+sd(pca.components[,2])
+sd(pca.components[,1])
+sd(pca.components[,4])
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",],n=1)$sdev^2*2
+#' @title Split clusters based on temperatures #
+#' #
+#' @description Split clusters into new clusters based on temperature for the deterministic annealing algorithm#
+#' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.#
+#' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step#
+#' @param clusters Expect the most likely cluster assignments#
+#' @param temperature Current temperature to use to split clusters#
+#' @param decay.step Data.frame with the first column as the step number and the second column as the temperature for that step#
+#' @param max.clusters Maximum number of clusters for the dataset#
+#' @export#
+#
+cluster_split <- function(pca.components,parameter.estimates,clusters,temperature,decay.step,max.clusters) {#
+	initial.clusters <- as.numeric(as.character(levels(clusters)))#
+	new.eigen <- vector("list",length=length(levels(clusters)))#
+	for (i in 1:length(levels(clusters))) {#
+	new.eigen[[i]] <- prcomp_irlba(pca.components[em_results[["clusters"]]=="1",],n=1)$sdev^2*2#
+	}#
+	critical.temps <- vector()#
+	for (i in 1:length(new.eigen)) {#
+		critical.temps[i] <- 2*new.eigen[[i]]#
+	}#
+	if (any(temperature>critical.temps)) {#
+		temperature <- decay.step[which(min(critical.temps) > decay.step[,2])[1],"temperature"]#
+	}#
+	split.clusters <- data.frame("initial"=NULL,"split"=NULL)#
+	if((sum(critical.temps>temperature)*2)>max.clusters) {#
+		num.to.split <- max.clusters-length(initial.clusters)#
+		clusters.to.split <- order(critical.temps,decreasing=T)[1:num.to.split]#
+	for (i in clusters.to.split) {#
+		clusters <- factor(clusters,levels=c(seq(1,length(levels(clusters))+1,1)))#
+	if (nrow(split.clusters)==0) {#
+				split.clusters <- data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))])#
+	} else {#
+		split.clusters <- rbind(split.clusters,data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))]))#
+	}#
+	half.cluster.length <- round(length(which(clusters==i))/2)#
+			clusters[which(clusters==i)[(half.cluster.length+1):(2*half.cluster.length)]] <- levels(clusters)[length(levels(clusters))]#
+			}#
+	} else {#
+	for (i in 1:length(critical.temps)) {#
+		if (critical.temps[i]>temperature) {#
+			clusters <- factor(clusters,levels=c(seq(1,length(levels(clusters))+1,1)))#
+			if (nrow(split.clusters)==0) {#
+				split.clusters <- data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))])#
+			} else {#
+				split.clusters <- rbind(split.clusters,data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))]))#
+			}#
+			half.cluster.length <- round(length(which(clusters==i))/2)#
+			clusters[which(clusters==i)[(half.cluster.length+1):(2*half.cluster.length)]] <- levels(clusters)[length(levels(clusters))]#
+		}#
+	}#
+	}#
+	new.clusters <- setdiff(as.numeric(as.character(levels(clusters))),initial.clusters)#
+	if (length(new.clusters)<1) {#
+		return(list("clusters"=clusters,"maximization"=parameter.estimates))#
+	} else {#
+	new.cluster.params <- vector("list",length(levels(clusters)))#
+	for (i in new.clusters) {#
+		subset <- pca.components[clusters==i,]#
+		new.cluster.params[[i]]$mu <- apply(subset,2,mean)#
+		new.cluster.params[[i]]$covariance <- cov(subset)#
+		new.cluster.params[[i]]$weight <- nrow(subset)/nrow(pca.components)#
+	}#
+	parameter.estimates <- c(parameter.estimates[initial.clusters],new.cluster.params[new.clusters])#
+	for (i in 1:nrow(split.clusters)) {#
+	parameter.estimates[[as.numeric(as.character(split.clusters$initial[i]))]]$weight <- parameter.estimates[[as.numeric(as.character(split.clusters$split[i]))]]$weight#
+	}#
+	}#
+	expect_results <- expectation_step(pca.components,clusters,parameter.estimates,temperature)#
+return(list("clusters"=clusters,"maximization"=parameter.estimates,"conditional.prob"=expect_results[["conditional.prob"]],"posterior.probability"=expect_results[["posterior.probability"]],temperature=temperature))#
+}
+split.clusters <- cluster_split(pca.components,em_results[["maximization"]],em_results[["clusters"]],temperature=27,decay.step[2,],max.clusters=8)
+#' @title Split clusters based on temperatures #
+#' #
+#' @description Split clusters into new clusters based on temperature for the deterministic annealing algorithm#
+#' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.#
+#' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step#
+#' @param clusters Expect the most likely cluster assignments#
+#' @param temperature Current temperature to use to split clusters#
+#' @param decay.step Data.frame with the first column as the step number and the second column as the temperature for that step#
+#' @param max.clusters Maximum number of clusters for the dataset#
+#' @export#
+#
+cluster_split <- function(pca.components,parameter.estimates,clusters,temperature,decay.step,max.clusters) {#
+	initial.clusters <- as.numeric(as.character(levels(clusters)))#
+	new.eigen <- vector("list",length=length(levels(clusters)))#
+	for (i in 1:length(levels(clusters))) {#
+	new.eigen[[i]] <- irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",],n=1)$sdev^2*2#
+	}#
+	critical.temps <- vector()#
+	for (i in 1:length(new.eigen)) {#
+		critical.temps[i] <- 2*new.eigen[[i]]#
+	}#
+	if (any(temperature>critical.temps)) {#
+		temperature <- decay.step[which(min(critical.temps) > decay.step[,2])[1],"temperature"]#
+	}#
+	split.clusters <- data.frame("initial"=NULL,"split"=NULL)#
+	if((sum(critical.temps>temperature)*2)>max.clusters) {#
+		num.to.split <- max.clusters-length(initial.clusters)#
+		clusters.to.split <- order(critical.temps,decreasing=T)[1:num.to.split]#
+	for (i in clusters.to.split) {#
+		clusters <- factor(clusters,levels=c(seq(1,length(levels(clusters))+1,1)))#
+	if (nrow(split.clusters)==0) {#
+				split.clusters <- data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))])#
+	} else {#
+		split.clusters <- rbind(split.clusters,data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))]))#
+	}#
+	half.cluster.length <- round(length(which(clusters==i))/2)#
+			clusters[which(clusters==i)[(half.cluster.length+1):(2*half.cluster.length)]] <- levels(clusters)[length(levels(clusters))]#
+			}#
+	} else {#
+	for (i in 1:length(critical.temps)) {#
+		if (critical.temps[i]>temperature) {#
+			clusters <- factor(clusters,levels=c(seq(1,length(levels(clusters))+1,1)))#
+			if (nrow(split.clusters)==0) {#
+				split.clusters <- data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))])#
+			} else {#
+				split.clusters <- rbind(split.clusters,data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))]))#
+			}#
+			half.cluster.length <- round(length(which(clusters==i))/2)#
+			clusters[which(clusters==i)[(half.cluster.length+1):(2*half.cluster.length)]] <- levels(clusters)[length(levels(clusters))]#
+		}#
+	}#
+	}#
+	new.clusters <- setdiff(as.numeric(as.character(levels(clusters))),initial.clusters)#
+	if (length(new.clusters)<1) {#
+		return(list("clusters"=clusters,"maximization"=parameter.estimates))#
+	} else {#
+	new.cluster.params <- vector("list",length(levels(clusters)))#
+	for (i in new.clusters) {#
+		subset <- pca.components[clusters==i,]#
+		new.cluster.params[[i]]$mu <- apply(subset,2,mean)#
+		new.cluster.params[[i]]$covariance <- cov(subset)#
+		new.cluster.params[[i]]$weight <- nrow(subset)/nrow(pca.components)#
+	}#
+	parameter.estimates <- c(parameter.estimates[initial.clusters],new.cluster.params[new.clusters])#
+	for (i in 1:nrow(split.clusters)) {#
+	parameter.estimates[[as.numeric(as.character(split.clusters$initial[i]))]]$weight <- parameter.estimates[[as.numeric(as.character(split.clusters$split[i]))]]$weight#
+	}#
+	}#
+	expect_results <- expectation_step(pca.components,clusters,parameter.estimates,temperature)#
+return(list("clusters"=clusters,"maximization"=parameter.estimates,"conditional.prob"=expect_results[["conditional.prob"]],"posterior.probability"=expect_results[["posterior.probability"]],temperature=temperature))#
+}
+split.clusters <- cluster_split(pca.components,em_results[["maximization"]],em_results[["clusters"]],temperature=27,decay.step[2,],max.clusters=8)
+table(split.clusters[["clusters"]])
+names(split.clusters)
+split.clusters[["temperature"]]
+em_results <- expect_max(pca.components,tsne.coordinates,clusters=split.clusters[["clusters"]],parameter.estimates==split.clusters[["maximization"]],max.iterations=5,delta.lot.li=1e-6,temp=27)
+em_results <- expect_max(pca.components,tsne.coordinates,clusters=split.clusters[["clusters"]],parameter.estimates==split.clusters[["maximization"]],max.iterations=5,delta.log.li=1e-6,temp=27)
+split.clusters[["maximization"]]
+em_results <- expect_max(pca.components,tsne.coordinates,clusters=split.clusters[["clusters"]],parameter.estimates==split.clusters[["maximization"]],max.iterations=5,delta.log.li=1e-6,temp=27)
+em_results <- expect_max(pca.components,tsne.coordinates,clusters=split.clusters[["clusters"]],parameter.estimates=split.clusters[["maximization"]],max.iterations=5,delta.log.li=1e-6,temp=27)
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",])$sdev^2*2#
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="2",])$sdev^2*2#
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="3",])$sdev^2*2#
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="4",])$sdev^2*2
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="4",],n=1)$sdev^2*2
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="1",],n=1)$sdev^2*2#
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="2",],n=1)$sdev^2*2#
+irlba::prcomp_irlba(pca.components[em_results[["clusters"]]=="3",],n=1)$sdev^2*2
+decay.step
+#' @title Split clusters based on temperatures #
+#' #
+#' @description Split clusters into new clusters based on temperature for the deterministic annealing algorithm#
+#' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.#
+#' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step#
+#' @param clusters Expect the most likely cluster assignments#
+#' @param temperature Current temperature to use to split clusters#
+#' @param decay.step Data.frame with the first column as the step number and the second column as the temperature for that step#
+#' @param max.clusters Maximum number of clusters for the dataset#
+#' @export#
+#
+cluster_split <- function(pca.components,parameter.estimates,clusters,temperature,decay.step,max.clusters) {#
+	initial.clusters <- as.numeric(as.character(levels(clusters)))#
+	new.eigen <- vector("list",length=length(levels(clusters)))#
+	for (i in 1:length(levels(clusters))) {#
+	suppressWarnings(new.eigen[[i]] <- irlba::prcomp(pca.components[clusters==i,],n=1)$sdev^2*2#
+	)#
+	}#
+	critical.temps <- vector()#
+	for (i in 1:length(new.eigen)) {#
+		critical.temps[i] <- 2*new.eigen[[i]]#
+	}#
+	if (any(temperature>critical.temps)) {#
+		temperature <- decay.step[which(min(critical.temps) > decay.step[,2])[1],"temperature"]#
+	}#
+	split.clusters <- data.frame("initial"=NULL,"split"=NULL)#
+	if((sum(critical.temps>temperature)*2)>max.clusters) {#
+		num.to.split <- max.clusters-length(initial.clusters)#
+		clusters.to.split <- order(critical.temps,decreasing=T)[1:num.to.split]#
+	for (i in clusters.to.split) {#
+		clusters <- factor(clusters,levels=c(seq(1,length(levels(clusters))+1,1)))#
+	if (nrow(split.clusters)==0) {#
+				split.clusters <- data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))])#
+	} else {#
+		split.clusters <- rbind(split.clusters,data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))]))#
+	}#
+	half.cluster.length <- round(length(which(clusters==i))/2)#
+			clusters[which(clusters==i)[(half.cluster.length+1):(2*half.cluster.length)]] <- levels(clusters)[length(levels(clusters))]#
+			}#
+	} else {#
+	for (i in 1:length(critical.temps)) {#
+		if (critical.temps[i]>temperature) {#
+			clusters <- factor(clusters,levels=c(seq(1,length(levels(clusters))+1,1)))#
+			if (nrow(split.clusters)==0) {#
+				split.clusters <- data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))])#
+			} else {#
+				split.clusters <- rbind(split.clusters,data.frame("initial"=levels(clusters)[i],"split"=levels(clusters)[length(levels(clusters))]))#
+			}#
+			half.cluster.length <- round(length(which(clusters==i))/2)#
+			clusters[which(clusters==i)[(half.cluster.length+1):(2*half.cluster.length)]] <- levels(clusters)[length(levels(clusters))]#
+		}#
+	}#
+	}#
+	new.clusters <- setdiff(as.numeric(as.character(levels(clusters))),initial.clusters)#
+	if (length(new.clusters)<1) {#
+		return(list("clusters"=clusters,"maximization"=parameter.estimates))#
+	} else {#
+	new.cluster.params <- vector("list",length(levels(clusters)))#
+	for (i in new.clusters) {#
+		subset <- pca.components[clusters==i,]#
+		new.cluster.params[[i]]$mu <- apply(subset,2,mean)#
+		new.cluster.params[[i]]$covariance <- cov(subset)#
+		new.cluster.params[[i]]$weight <- nrow(subset)/nrow(pca.components)#
+	}#
+	parameter.estimates <- c(parameter.estimates[initial.clusters],new.cluster.params[new.clusters])#
+	for (i in 1:nrow(split.clusters)) {#
+	parameter.estimates[[as.numeric(as.character(split.clusters$initial[i]))]]$weight <- parameter.estimates[[as.numeric(as.character(split.clusters$split[i]))]]$weight#
+	}#
+	}#
+	expect_results <- expectation_step(pca.components,clusters,parameter.estimates,temperature)#
+return(list("clusters"=clusters,"maximization"=parameter.estimates,"conditional.prob"=expect_results[["conditional.prob"]],"posterior.probability"=expect_results[["posterior.probability"]],temperature=temperature))#
+}
+library(daGMM)#
+#
+load('~/Desktop/pca_components_for_testing.19.01.01.RData')#
+#
+decay.step <- data.frame("step"=cbind(1+c(0:8,9)),"temperature"=c(50*exp(-(0:8)*0.5),0))#
+max.iterations=5#
+delta.log.likelihood=1e-6#
+max.clusters <- 8#
+#
+em_results <- initialize.gmm(pca.components,temperature=decay.step[1,2])
+clusters <- em_results[["clusters"]]#
+parameter.estimates <- em_results[["maximization"]]
+em_results <- expect_max(pca.components,tsne.coordinates,clusters,parameter.estimates,max.iterations=5,delta.log.li=1e-6,temp=50)
+em_results[["expectation"]][[2]]
+em_results <- initialize.gmm(pca.components,temperature=decay.step[1,2])#
+#
+clusters <- em_results[["clusters"]]#
+parameter.estimates <- em_results[["maximization"]]
+clusters <- em_results[["clusters"]]#
+parameter.estimates <- em_results[["maximization"]]#
+temp <- 50
+dist.measure <- vector("list",length=length(levels(clusters)))#
+llh.prob <- vector("list",length=length(levels(clusters)))#
+post.prob <- vector("list",length=length(levels(clusters)))#
+#
+system.time(#
+for(i in 1:length(levels(clusters))) {#
+dist.measure[[i]] <- mapply(function(x,y) sqrt(sum((pca.components[x,]-parameter.estimates[[y]]$mu)^2)),1:nrow(pca.components),i)#
+llh.prob[[i]] <- exp(-dist.measure[[i]]*(1/temp))#
+}#
+)#
+llh.prob.sum <- Reduce("+",llh.prob)#
+system.time(#
+for(i in 1:length(levels(clusters))) {#
+post.prob[[i]] <- llh.prob[[i]]/llh.prob.sum#
+}#
+)
+llh.prob
+post.prob
+post.prob[[1]][1]
+post.prob[[1]][2]
+expectation <- expectation_step(pca.components,em_results[["clusters"]],em_results[["maximization"]],temp=50)
+expectation[[1]][[1]]
+expectation[[1]][2]
+expectation[[2]][2]
+names(expectation)
+expectation[[1]][1:10]
+expectation[[2]][1:10]
+llh.prob.sum
+llh.prob[[1]][1]
+llh.prob[[2]][1]
+llh.prob[[2]][1]/llh.prob.sum[1]
+llh.prob[[1]][1]/llh.prob.sum[1]
+post.prob[[1]][1]
+post.prob[[2]][1]
+posteriors <- expectation[["posterior.probability"]]#
+clusters <- expectation[["clusters"]]
+max <- maximization_step(pca.components,em_results[["clusters"]],posteriors=expectation[[2]])
+max
+posteriors <- expectation[["posterior.probability"]]#
+clusters <- expectation[["clusters"]]
+clusters
+clusters <- as.factor(apply(expectation[["posterior.probability"]],1,function(x) which.max(x)))
+table(clusters)
+max <- maximization_step(pca.components,clusters,posteriors=expectation[[2]])
+max
+names(max)
+max
+expectation <- expectation_step(pca.components,clusters,max,temp=50)
+expectation[[1]][1]
+expectation[[2]][1]
+names(expectation)
+length(expectation[[1]])
+length(expectation[[1]][[1]])
+expectation[[1]][[1]]
+expectation[[1]]
+expectation[[2]]
+posteriors <- expectation[["posterior.probability"]]#
+clusters <- as.factor(apply(expectation[["posterior.probability"]],1,function(x) which.max(x)))
+table(clusters)
+max <- maximization_step(pca.components,clusters,posteriors=expectation[[2]])
+max
+expectation <- expectation_step(pca.components,clusters,max,temp=50)#
+#
+posteriors <- expectation[["posterior.probability"]]#
+clusters <- as.factor(apply(expectation[["posterior.probability"]],1,function(x) which.max(x)))#
+#
+max <- maximization_step(pca.components,clusters,posteriors=expectation[[2]])
+expectation[[1]][1,]
+expectation[[2]][1,]
+table(clsuters)
+table(clusters)
+posteriors <- expectation[["posterior.probability"]]#
+clusters <- as.factor(apply(expectation[["posterior.probability"]],1,function(x) which.max(x)))
+max <- maximization_step(pca.components,clusters,posteriors=expectation[[2]])
+expectation <- expectation_step(pca.components,clusters,max,temp=50)
+posteriors <- expectation[["posterior.probability"]]
+clusters <- as.factor(apply(expectation[["posterior.probability"]],1,function(x) which.max(x)))
+max <- maximization_step(pca.components,clusters,posteriors=expectation[[2]])
+max
+library(daGMM)#
+#
+load('~/Desktop/pca_components_for_testing.19.01.01.RData')#
+#
+decay.step <- data.frame("step"=cbind(1+c(0:8,9)),"temperature"=c(50*exp(-(0:8)*0.5),0))#
+max.iterations=5#
+delta.log.likelihood=1e-6#
+max.clusters <- 8#
+#
+em_results <- initialize.gmm(pca.components,temperature=decay.step[1,2])
+clusters <- em_results[["clusters"]]#
+parameter.estimates <- em_results[["maximization"]]
+dist.measure <- vector("list",length=length(levels(clusters)))#
+	llh.prob <- vector("list",length=length(levels(clusters)))#
+	post.prob <- vector("list",length=length(levels(clusters)))
+for (i in 1:length(levels(clusters))) {#
+dist.measure[[i]] <- mapply(function(x,y) sqrt(sum((pca.components[x,]-parameter.estimates[[y]]$mu)^2)),1:nrow(pca.components),i)#
+#
+llh.prob[[i]] <- exp(-dist.measure[[i]]*(1/temp))#
+	}#
+	llh.prob.sum <- Reduce("+",llh.prob)#
+	for (i in 1:length(levels(clusters))) {#
+	post.prob[[i]] <- llh.prob[[i]]/llh.prob.sum#
+	}
+post.prob[[1]][1]
+post.prob[[1]][1,]
+post.prob[[1]]
+temp <- 50
+for (i in 1:length(levels(clusters))) {#
+dist.measure[[i]] <- mapply(function(x,y) sqrt(sum((pca.components[x,]-parameter.estimates[[y]]$mu)^2)),1:nrow(pca.components),i)#
+#
+llh.prob[[i]] <- exp(-dist.measure[[i]]*(1/temp))#
+	}#
+	llh.prob.sum <- Reduce("+",llh.prob)#
+	for (i in 1:length(levels(clusters))) {#
+	post.prob[[i]] <- llh.prob[[i]]/llh.prob.sum#
+	}
+post.prob[[1]][1]
+post.prob[[1]][1,]
+post.prob[[1]][1]
+post.prob[[2]][1]
+llh.prob[[2]][1]
+llh.prob[[1]][1]
+names(llh.prob) <- paste("Cluster_",seq(1,length(levels(clusters)),1),sep="")#
+	llh.prob.mat <- as.matrix(dplyr::bind_rows(llh.prob))#
+	rownames(llh.prob.mat) <- rownames(pca.components)
+llh.prob.mat[1,]
+names(post.prob) <- paste("Cluster_",seq(1,length(levels(clusters)),1),sep="")#
+	post.prob.mat <- as.matrix(dplyr::bind_rows(post.prob))#
+	rownames(post.prob.mat) <- rownames(pca.components)
+post.prob[1,]
+post.prob.mat[1,]
+library("ggplot2")#
+library("dplyr")#
+library("reshape2")#
+#
+vals.df %>%#
+  ggplot(aes(x = vals, y = 0)) +#
+  geom_point(alpha = 0.4) +#
+  xlab("Values") +#
+  theme(axis.ticks.y = element_blank(),#
+        axis.text.y = element_blank(),#
+        axis.title.y = element_blank())
+set.seed(1)#
+#
+comp1.vals <- data_frame(comp = "A", #
+                         vals = rnorm(50, mean = 1, sd = 0.5))#
+comp2.vals <- data_frame(comp = "B", #
+                         vals = rnorm(50, mean = 1.5, sd = 0.5))#
+#
+vals.df <- bind_rows(comp1.vals, comp2.vals)#
+#
+vals.df %>%#
+  ggplot(aes(x = vals, y = "A", color = factor(comp))) +#
+  geom_point(alpha = 0.4) +#
+  scale_color_discrete(name = "Source of Data") +#
+  xlab("Values") +#
+  theme(axis.ticks.y = element_blank(),#
+        axis.text.y = element_blank(),#
+        axis.title.y = element_blank(),#
+        legend.position = "top")
+vals.df %>%#
+  ggplot(aes(x = vals, y = 0)) +#
+  geom_point(alpha = 0.4) +#
+  xlab("Values") +#
+  theme(axis.ticks.y = element_blank(),#
+        axis.text.y = element_blank(),#
+        axis.title.y = element_blank())
+vals.df %>%#
+  group_by(comp) %>%#
+  summarize(mean_vals = mean(vals),#
+            sd_vals = sd(vals))
+wait <- faithful$waiting#
+#
+wait.kmeans <- kmeans(wait, 2)#
+wait.kmeans.cluster <- wait.kmeans$cluster#
+#
+wait.df <- data_frame(x = wait, cluster = wait.kmeans.cluster)#
+#
+wait.df %>%#
+  mutate(num = row_number()) %>%#
+  ggplot(aes(y = num, x = x, color = factor(cluster))) +#
+  geom_point() +#
+  ylab("Values") +#
+  ylab("Data Point Number") +#
+  scale_color_discrete(name = "Cluster") +#
+  ggtitle("K-means Clustering")
+wait.summary.df <- wait.df %>%#
+  group_by(cluster) %>%#
+  summarize(mu = mean(x), variance = var(x), std = sd(x), size = n())#
+#
+wait.summary.df %>%#
+  select(cluster, mu, variance, std)
+wait.summary.df <- wait.summary.df %>%#
+  mutate(alpha = size / sum(size))#
+#
+wait.summary.df %>%#
+  select(cluster, size, alpha)
+comp1.prod <- dnorm(x = wait, mean = wait.summary.df$mu[1], #
+                    sd = wait.summary.df$std[1]) * wait.summary.df$alpha[1]#
+#
+comp2.prod <- dnorm(x = wait, mean = wait.summary.df$mu[2], #
+                    sd = wait.summary.df$std[2]) * wait.summary.df$alpha[2]#
+#
+normalizer <- comp1.prod + comp2.prod#
+#
+comp1.post <- comp1.prod / normalizer#
+comp2.post <- comp2.prod / normalizer
+comp1.prod
+comp.prod1[1:10]
+comp1.prod[1:10]
+comp2.prod[1:10]
+normalizer[1:10]
+sum(comp1.prod[1:10,comp2.prod[1:10]])
+sum(comp1.prod[1:10],comp2.prod[1:10])
+normalizer
+comp1.prod[1:10]+comp2.prod[1:10]
+llh.prob.sum
+llh.prob[[1]][1:10]+llh.prob[[2]][1:10]
+llh.prob.sum[1:10]
+comp1.post <- comp1.prod / normalizer
+comp1.post
+comp2.post <- comp2.prod / normalizer
+normalizer
+comp2.prod
+dist.measure <- vector("list",length=length(levels(clusters)))#
+	llh.prob <- vector("list",length=length(levels(clusters)))#
+	post.prob <- vector("list",length=length(levels(clusters)))#
+	for (i in 1:length(levels(clusters))) {#
+dist.measure[[i]] <- mapply(function(x,y) sqrt(sum((pca.components[x,]-parameter.estimates[[y]]$mu)^2)),1:nrow(pca.components),i)#
+#
+llh.prob[[i]] <- exp(-dist.measure[[i]]*(1/temp))#
+	}
+dist.measure
+dist.measure <- vector("list",length=nrow(pca.components))#
+	llh.prob <- vector("list",length=nrow(pca.components))#
+	post.prob <- vector("list",length=nrow(pca.components))#
+	for (i in 1:nrow(pca.components)) {#
+		for (z in 1:length(levels(clusters))) {#
+		dist.measure[[i]][[z]] <- dist(rbind(pca.components[i,],parameter.estimates[[z]]$mu))^2#
+		}#
+	}
+dist.measure[[i]][[1]]
+dist.measure[[1]][[1]]
+dist.measure[[2]][[1]]
+dist.measure[[3]][[1]]
+dist.measure[[1]][[1]]
+dist.measure[[1]][[2]]
+dist.measure[[1]][[3]]
+mapply(function(x,y) sqrt(sum((pca.components[x,]-parameter.estimates[[y]]$mu)^2)),1:nrow(pca.components),i)
+i
+i <- 1
+mapply(function(x,y) sqrt(sum((pca.components[x,]-parameter.estimates[[y]]$mu)^2)),1:nrow(pca.components),i)
+dist(rbind(pca.components[1,],parameter.estimates[[1]]$mu))^2
+mapply(function(x,y) sqrt(sum((parameter.estimates[[x]]$mu-pca.components[y,])^2)),i,1:nrow(pca.components))
+(parameter.estimates[[x]]$mu-pca.components[y,])
+mapply(function(x,y) sqrt(sum((pca.components[x,]-parameter.estimates[[y]]$mu)^2)),1:nrow(pca.components),i)
+dist(rbind(pca.components[1,],parameter.estimates[[1]]$mu))
+6.3^2
+dist.measure[[i]] <- mapply(function(x,y) sqrt(sum((parameter.estimates[[x]]$mu-pca.components[y,])^2))^2,i,1:nrow(pca.components))
+dist.measures[[1]][1]
+dist.measure[[1]][1]
+em_results <- readRDS("~/Desktop/January 2019/daGMM_output.19.01.06/em_results_temp_1.5.RDS")#
+#
+pca.components <- em_results[["pca.components"]]#
+clusters <- em_results[["clusters"]]#
+parameter.estimates <- em_results[["maximization"]]#
+temp <- 0.92#
+num.cores <- 3
+library(daGMM)
+em_results <- readRDS("~/Desktop/January 2019/daGMM_output.19.01.06/em_results_temp_1.5.RDS")#
+#
+pca.components <- em_results[["pca.components"]]#
+clusters <- em_results[["clusters"]]#
+parameter.estimates <- em_results[["maximization"]]#
+temp <- 0.92#
+num.cores <- 3
+expect <- expectation_step(pca.components,clusters,parameter.estimates,temp,num.cores)
+parallel::stopCluster(cl)
+cl <- parallel::makeCluster(num.cores)#
+	doParallel::registerDoParallel(cl,cores=num.cores)#
+	dist.measure <- vector()#
+	llh.prob <- vector()#
+	post.prob <- vector("list",length=length(levels(clusters)))#
+llh.prob <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+dist.measure <- mapply(function(x,y) sqrt(sum((parameter.estimates[[x]]$mu-pca.components[y,])^2))^2,i,1:nrow(pca.components))#
+#
+exp(-dist.measure*(1/temp))#
+	}#
+	parallel::stopCluster(cl)
+parallel::stopCluster(cl)
+llh.prob
+llh.prob.sum <- Reduce("+",llh.prob)#
+	for (i in 1:length(levels(clusters))) {#
+	post.prob[[i]] <- llh.prob[[i]]/llh.prob.sum#
+	}#
+	names(llh.prob) <- paste("Cluster_",seq(1,length(levels(clusters)),1),sep="")#
+	llh.prob.mat <- as.matrix(dplyr::bind_rows(llh.prob))#
+	rownames(llh.prob.mat) <- rownames(pca.components)#
+	names(post.prob) <- paste("Cluster_",seq(1,length(levels(clusters)),1),sep="")#
+	post.prob.mat <- as.matrix(dplyr::bind_rows(post.prob))#
+	rownames(post.prob.mat) <- rownames(pca.components)
+#' @title Maximization step of the algorithm#
+#'#
+#' @description Use the expectation step to generate parameters of the mixture model#
+#'#
+#' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.#
+#' @param clusters Expect the most likely cluster assignments.#
+#' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step.#
+#' @param posteriors Data.frame of priors from the expectation step.#
+#' @importFrom foreach %dopar%#
+#' @export#
+#
+maximization_step <- function(pca.components,clusters,parameter.estimates,posteriors,num.cores) {#
+	if (num.cores==1) {#
+	maximization.parameters <- vector("list",length=length(levels(clusters)))#
+	post.sum <- apply(posteriors,2,sum)#
+	for (i in 1:length(levels(clusters))) {#
+		maximization.parameters[[i]]$mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(maximization.parameters[[i]]$mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-maximization.parameters[[i]]$mu))#
+		maximization.parameters[[i]]$covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		maximization.parameters[[i]]$weight <- post.sum[i]/nrow(pca.components)#
+	}#
+	return(maximization.parameters)#
+	} else {#
+	mu <- vector()#
+	covariance <- vector()#
+	weight <- vector()#
+	maximization.parameters <- vector()#
+	post.sum <- apply(posteriors,2,sum)#
+	cl <- parallel::makeCluster(num.cores)#
+	doParallel::registerDoParallel(cl,cores=num.cores)#
+	maximization.parameters <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+		mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(maximization.parameters[[i]]$mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-maximization.parameters[[i]]$mu))#
+		covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		weight <- post.sum[i]/nrow(pca.components)#
+		list(mu,covariance,weight)#
+	}#
+	return(maximization.parameters)#
+	}#
+	}
+posteriors <- post.prob
+parameter.estimates <- maximization_step(pca.components,clusters,parameter.estimates,posteriors,num.cores)
+mu <- vector()#
+	covariance <- vector()#
+	weight <- vector()#
+	maximization.parameters <- vector()#
+	post.sum <- apply(posteriors,2,sum)
+posteriors
+posteriors <- post.prob.mat
+mu <- vector()#
+	covariance <- vector()#
+	weight <- vector()#
+	maximization.parameters <- vector()#
+	post.sum <- apply(posteriors,2,sum)
+cl <- parallel::makeCluster(num.cores)#
+	doParallel::registerDoParallel(cl,cores=num.cores)
+maximization.parameters <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+		mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(maximization.parameters[[i]]$mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-maximization.parameters[[i]]$mu))#
+		covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		weight <- post.sum[i]/nrow(pca.components)#
+		list(mu,covariance,weight)#
+	}
+mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))
+mu
+i
+i <- NULL
+maximization.parameters <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+		mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(maximization.parameters[[i]]$mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-maximization.parameters[[i]]$mu))#
+		covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		weight <- post.sum[i]/nrow(pca.components)#
+		list(mu,covariance,weight)#
+	}
+#' @title Maximization step of the algorithm#
+#'#
+#' @description Use the expectation step to generate parameters of the mixture model#
+#'#
+#' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.#
+#' @param clusters Expect the most likely cluster assignments.#
+#' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step.#
+#' @param posteriors Data.frame of priors from the expectation step.#
+#' @importFrom foreach %dopar%#
+#' @export#
+#
+maximization_step <- function(pca.components,clusters,parameter.estimates,posteriors,num.cores) {#
+	if (num.cores==1) {#
+	maximization.parameters <- vector("list",length=length(levels(clusters)))#
+	post.sum <- apply(posteriors,2,sum)#
+	for (i in 1:length(levels(clusters))) {#
+		maximization.parameters[[i]]$mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(maximization.parameters[[i]]$mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-maximization.parameters[[i]]$mu))#
+		maximization.parameters[[i]]$covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		maximization.parameters[[i]]$weight <- post.sum[i]/nrow(pca.components)#
+	}#
+	return(maximization.parameters)#
+	} else {#
+	mu <- vector()#
+	covariance <- vector()#
+	weight <- vector()#
+	maximization.parameters <- vector()#
+	post.sum <- apply(posteriors,2,sum)#
+	cl <- parallel::makeCluster(num.cores)#
+	doParallel::registerDoParallel(cl,cores=num.cores)#
+#
+	maximization.parameters <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+		mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(maximization.parameters[[i]]$mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-mu))#
+		covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		weight <- post.sum[i]/nrow(pca.components)#
+		list(mu,covariance,weight)#
+	}#
+	return(maximization.parameters)#
+	}#
+	}
+parallel::stopCluster(cl)
+cl <- parallel::makeCluster(num.cores)#
+	doParallel::registerDoParallel(cl,cores=num.cores)
+maximization.parameters <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+		mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(maximization.parameters[[i]]$mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-mu))#
+		covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		weight <- post.sum[i]/nrow(pca.components)#
+		list(mu,covariance,weight)#
+	}
+#' @title Maximization step of the algorithm#
+#'#
+#' @description Use the expectation step to generate parameters of the mixture model#
+#'#
+#' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.#
+#' @param clusters Expect the most likely cluster assignments.#
+#' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step.#
+#' @param posteriors Data.frame of priors from the expectation step.#
+#' @importFrom foreach %dopar%#
+#' @export#
+#
+maximization_step <- function(pca.components,clusters,parameter.estimates,posteriors,num.cores) {#
+	if (num.cores==1) {#
+	maximization.parameters <- vector("list",length=length(levels(clusters)))#
+	post.sum <- apply(posteriors,2,sum)#
+	for (i in 1:length(levels(clusters))) {#
+		maximization.parameters[[i]]$mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(maximization.parameters[[i]]$mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-maximization.parameters[[i]]$mu))#
+		maximization.parameters[[i]]$covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		maximization.parameters[[i]]$weight <- post.sum[i]/nrow(pca.components)#
+	}#
+	return(maximization.parameters)#
+	} else {#
+	mu <- vector()#
+	covariance <- vector()#
+	weight <- vector()#
+	maximization.parameters <- vector()#
+	post.sum <- apply(posteriors,2,sum)#
+	cl <- parallel::makeCluster(num.cores)#
+	doParallel::registerDoParallel(cl,cores=num.cores)#
+#
+	maximization.parameters <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+		mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-mu))#
+		covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		weight <- post.sum[i]/nrow(pca.components)#
+		list(mu,covariance,weight)#
+	}#
+	parallel::stopCluster(cl)#
+	return(maximization.parameters)#
+	}#
+	}
+maximization.parameters <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+		mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(mu) <- colnames(pca.components)#
+		trans.pca.mu <- t(apply(pca.components,1,function(x) x-mu))#
+		covariance <- t(posteriors[,i]*trans.pca.mu) %*% (posteriors[,i]*trans.pca.mu)/post.sum[i]#
+		weight <- post.sum[i]/nrow(pca.components)#
+		list(mu,covariance,weight)#
+	}
+maximization.parameters
+mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))#
+		names(mu) <- colnames(pca.components)
+posteriors
+mu <- mapply(function(x,y) sum(posteriors[,x]*pca.components[,y])/post.sum[x],i,1:ncol(pca.components))
+post.sum
+post.sum <- apply(posteriors,2,sum)
+post.sum
+posteriors
+post.sum <- apply(posteriors,2,sum)
+post.sum
+apply(post.prob.mat,2,sum)
+table(is.na(post.prob.mat))
+expectation <- expectation_step(pca.components,clusters,parameter.estimates,temp,num.cores)
+library(parallel)
+?makeCluster
+?parallel
+help(package='parallel')
+#' @title EM step of the algorithm#
+#'#
+#' @description Wrapper to go between the expectation and maximization steps until the maximum iterations or the convergence of log likelihood#
+#' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.#
+#' @param clusters Expect the most likely cluster assignments#
+#' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step#
+#' @param max.iterations The maximum number of iterations of the EM#
+#' @param delta.log.li Change in the log likelihood to satisfy convergence#
+#' @export#
+#
+expect_max <- function(pca.components,tsne.coordinates,clusters,parameter.estimates,max.iterations,delta.log.li,temp,num.cores) {#
+for (i in 1:max.iterations) {#
+if (i==1) {#
+	log.li <- vector()#
+	cur.log.li <- vector()#
+	expectation <-expectation_step(pca.components,clusters,parameter.estimates,temp,num.cores)#
+	post.sums <- rowSums(expectation[["likelihood.probability"]])#
+	if (any(post.sums==0)) {#
+	zero.index <- which(post.sums==0)#
+	pca.components <- pca.components[-zero.index,]#
+	tsne.coordinates <- tsne.coordinates[-zero.index,]#
+	clusters <- clusters[-zero.index]#
+	expectation[[1]] <- expectation[[1]][-zero.index,]#
+	expectation[[2]] <- expectation[[2]][-zero.index,]#
+}#
+#
+	clusters <- as.factor(apply(unlist(expectation[["posterior.probability"]]),1,function(x) which.max(x)))#
+	parameter.estimates <- maximization_step(pca.components,clusters,parameter.estimates,posteriors=expectation[["posterior.probability"]],num.cores)#
+	weights <- sapply(parameter.estimates,"[[",3)#
+	if (any(weights==0)) {#
+		zero.index <- which(weights==0)#
+		parameter.estimates <- parameter.estimates[-zero.index]#
+	}#
+	cur.log.li <- sum(log(apply(expectation[["likelihood.probability"]],1,sum),base=exp(1)))#
+	if (cur.log.li=="-Inf") {#
+		zero.index <- which(log(apply(expectation[["likelihood.probability"]]*weights,2,sum),base=exp(1))=="-Inf")#
+		pca.components <- pca.components[-zero.index,]#
+		tsne.coordinates <- tsne.coordinates[-zero.index,]#
+		clusters <- clusters[-zero.index]#
+		expectation[[1]] <- expectation[[1]][-zero.index,]#
+		expectation[[2]] <- expectation[[2]][-zero.index,]#
+		cur.log.li <- sum(log(apply(expectation[["likelihood.probability"]],1,sum),base=exp(1)))#
+	}#
+	log.li[i] <- cur.log.li#
+	print(paste("Current log likelihood=",cur.log.li,sep=""))#
+} else {#
+#
+	expectation <-expectation_step(pca.components,clusters,parameter.estimates,temp,num.cores)#
+	post.sums <- rowSums(expectation[["likelihood.probability"]])#
+	if (any(post.sums==0)) {#
+	zero.index <- which(post.sums==0)#
+	pca.components <- pca.components[-zero.index,]#
+	tsne.coordinates <- tsne.coordinates[-zero.index,]#
+	clusters <- clusters[-zero.index]#
+	expectation[[1]] <- expectation[[1]][-zero.index,]#
+	expectation[[2]] <- expectation[[2]][-zero.index,]#
+}#
+#
+	clusters <- as.factor(apply(unlist(expectation[["posterior.probability"]]),1,function(x) which.max(x)))#
+	parameter.estimates <- maximization_step(pca.components,clusters,parameter.estimates,posteriors=expectation[["posterior.probability"]],num.cores)#
+	weights <- sapply(parameter.estimates,"[[",3)#
+	if (any(weights==0)) {#
+		zero.index <- which(weights==0)#
+		parameter.estimates <- parameter.estimates[-zero.index]#
+	}#
+	cur.log.li <- sum(log(apply(expectation[["likelihood.probability"]],1,sum),base=exp(1)))#
+		if (cur.log.li=="-Inf") {#
+		zero.index <- which(log(apply(expectation[["likelihood.probability"]]*weights,2,sum),base=exp(1))=="-Inf")#
+		pca.components <- pca.components[-zero.index,]#
+		tsne.coordinates <- tsne.coordinates[-zero.index,]#
+		clusters <- clusters[-zero.index]#
+		expectation[[1]] <- expectation[[1]][-zero.index,]#
+		expectation[[2]] <- expectation[[2]][-zero.index,]#
+		cur.log.li <- sum(log(apply(expectation[["likelihood.probability"]],1,sum),base=exp(1)))#
+	}#
+	log.li[i] <- cur.log.li#
+	print(paste("Current log likelihood=",cur.log.li,sep=""))#
+		if (abs(cur.log.li-log.li[i-1])<delta.log.li) {#
+return(list("pca.components"=pca.components,"tsne.coordinates"=tsne.coordinates,"expectation"=expectation,"maximization"=parameter.estimates,"clusters"=clusters,"MLE"=log.li))#
+	}#
+}#
+#
+}	#
+return(list("pca.components"=pca.components,"tsne.coordinates"=tsne.coordinates,"expectation"=expectation,"maximization"=parameter.estimates,"clusters"=clusters,"MLE"=log.li))#
+#
+}
+nrow(annealing.step)
+decay.step[i,2]==temp.use
+library(daGMM)
+split.clusters <- cluster_split(initial.pca.components,parameter.estimates=em_results[["maximization"]],clusters=em_results[["clusters"]],temperature=temp.use,decay.step,max.clusters,num.cores)
+library(daGMM)#
+#
+setwd("/zfs1/tbruno/HNSCC_Tx_Naive_Dec_29/5_tconv_analysis")#
+#
+load("tconv_cells_pca_for_daGMM.18.01.11.RData")#
+load("tconv_cells_fitsne_data.18.01.11.RData")#
+tconv.FItSNE.data <- data.frame(tconv.FItSNE.data)#
+#
+# dir.create("/zfs1/tbruno/HNSCC_Tx_Naive_Dec_29/5_tconv_analysis/daGMM_output")#
+#
+setwd("/zfs1/tbruno/HNSCC_Tx_Naive_Dec_29/5_tconv_analysis/daGMM_output")#
+#
+#Determine initial temp for annealing#
+res <- eigen(cov(tconv.cells.pca))$values[1]#
+initial.temp <- res-(res*0.1)#
+#
+annealing.steps <- data.frame("step"=cbind(1+c(0:10)),"temperature"=c(initial.temp*exp(-(0:9)*0.2),0))
+temp.use <- decay.step[i+1,2]#
+		} else { if (decay.step[i,2]>temp.use) {#
+			temp.use <- decay.step[min(which(decay.step[,2]<temp.use)),2]#
+			} else {temp.use <- decay.step[i,2]}#
+		}#
+	} else {temp.use <- decay.step[i,2]}
+if (i>2) {#
+				if (decay.step[i,2]==temp.use) {#
+			temp.use <- decay.step[i+1,2]#
+		} else { if (decay.step[i,2]>temp.use) {#
+			temp.use <- decay.step[min(which(decay.step[,2]<temp.use)),2]#
+			} else {temp.use <- decay.step[i,2]}#
+		}#
+	} else {temp.use <- decay.step[i,2]}
+i <1
+i <- 1
+if (i>2) {#
+				if (decay.step[i,2]==temp.use) {#
+			temp.use <- decay.step[i+1,2]#
+		} else { if (decay.step[i,2]>temp.use) {#
+			temp.use <- decay.step[min(which(decay.step[,2]<temp.use)),2]#
+			} else {temp.use <- decay.step[i,2]}#
+		}#
+	} else {temp.use <- decay.step[i,2]}
+decay.step <- 1
+decay.step <- data.frame(c(1,2),c(1,2))
+if (i>2) {#
+				if (decay.step[i,2]==temp.use) {#
+			temp.use <- decay.step[i+1,2]#
+		} else { if (decay.step[i,2]>temp.use) {#
+			temp.use <- decay.step[min(which(decay.step[,2]<temp.use)),2]#
+			} else {temp.use <- decay.step[i,2]}#
+		}#
+	} else {temp.use <- decay.step[i,2]}
+if (decay.step[i,2]==temp.use) {#
+			temp.use <- decay.step[i+1,2]#
+		} else { if (decay.step[i,2]>temp.use) {#
+			temp.use <- decay.step[min(which(decay.step[,2]<temp.use)),2]#
+			} else {temp.use <- decay.step[i,2]}#
+		}
+#' @title Deterministic annealing expectation#
+#'#
+#' @description Uses a Euclidean distance metric to determine the distance of each cell from cluster centers, and uses a Gibbs sampler to evaluate the likelihood probability and posterior probability#
+#' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.#
+#' @param clusters Expect the most likely cluster assignments#
+#' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step#
+#' @importFrom foreach %dopar%#
+#' @export#
+#
+expectation_step_zero <- function(pca.components,clusters,parameter.estimates,num.cores) {#
+	if (num.cores==1) {#
+	dist.measure <- vector("list",length=length(levels(clusters)))#
+	llh.prob <- vector("list",length=length(levels(clusters)))#
+	post.prob <- vector("list",length=length(levels(clusters)))#
+	for (i in 1:length(levels(clusters))) {#
+dist.measure[[i]] <- mapply(function(x,y) mahalanobis(pca.components[x,],parameter.estimates[[y]]$mu,parameter.estimates[[y]]$cov),1:nrow(pca.components),i)#
+#
+llh.prob[[i]] <- exp(-dist.measure[[i]])#
+	}#
+	llh.prob.sum <- Reduce("+",llh.prob)#
+	for (i in 1:length(levels(clusters))) {#
+	post.prob[[i]] <- llh.prob[[i]]/llh.prob.sum#
+	}#
+	names(llh.prob) <- paste("Cluster_",seq(1,length(levels(clusters)),1),sep="")#
+	llh.prob.mat <- as.matrix(dplyr::bind_rows(llh.prob))#
+	rownames(llh.prob.mat) <- rownames(pca.components)#
+	names(post.prob) <- paste("Cluster_",seq(1,length(levels(clusters)),1),sep="")#
+	post.prob.mat <- as.matrix(dplyr::bind_rows(post.prob))#
+	rownames(post.prob.mat) <- rownames(pca.components)#
+	results.list <- vector("list",length=2)#
+	names(results.list) <- c("likelihood.probability","posterior.probability")#
+#
+	results.list[[1]] <- llh.prob.mat#
+	results.list[[2]] <- post.prob.mat#
+	return(results.list)#
+	} else {#
+	dist.measure <- vector()#
+	llh.prob <- vector()#
+	post.prob <- vector("list",length=length(levels(clusters)))#
+llh.prob <- foreach::foreach(i=1:length(levels(clusters))) %dopar% {#
+dist.measure <- mapply(function(x,y) sqrt(sum((parameter.estimates[[x]]$mu-pca.components[y,])^2))^2,i,1:nrow(pca.components))#
+#
+exp(-dist.measure)#
+	}#
+	llh.prob.sum <- Reduce("+",llh.prob)#
+	for (i in 1:length(levels(clusters))) {#
+	post.prob[[i]] <- llh.prob[[i]]/llh.prob.sum#
+	}#
+	names(llh.prob) <- paste("Cluster_",seq(1,length(levels(clusters)),1),sep="")#
+	llh.prob.mat <- as.matrix(dplyr::bind_rows(llh.prob))#
+	rownames(llh.prob.mat) <- rownames(pca.components)#
+	names(post.prob) <- paste("Cluster_",seq(1,length(levels(clusters)),1),sep="")#
+	post.prob.mat <- as.matrix(dplyr::bind_rows(post.prob))#
+	rownames(post.prob.mat) <- rownames(pca.components)#
+	results.list <- vector("list",length=2)#
+	names(results.list) <- c("likelihood.probability","posterior.probability")#
+#
+	results.list[[1]] <- llh.prob.mat#
+	results.list[[2]] <- post.prob.mat#
+	return(results.list)#
+#
+	}#
+#
+}
