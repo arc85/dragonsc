@@ -4,8 +4,8 @@
 \alias{expect_max_zero}
 \title{EM step of the algorithm}
 \usage{
-expect_max_zero(pca.components, tsne.coordinates, clusters, parameter.estimates,
-  max.iterations, delta.log.li, num.cores)
+expect_max_zero(pca.components, clusters, parameter.estimates,
+  max.iterations, delta.log.li, num.cores, verbose)
 }
 \arguments{
 \item{pca.components}{Expects a matrix with n rows as the cells and m columns as the principal components.}

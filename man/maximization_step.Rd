@@ -4,8 +4,8 @@
 \alias{maximization_step}
 \title{Maximization step of the algorithm}
 \usage{
-maximization_step(pca.components, clusters, parameter.estimates, posteriors,
-  num.cores)
+maximization_step(pca.components, clusters, parameter.estimates,
+  posteriors, num.cores)
 }
 \arguments{
 \item{pca.components}{Expects a matrix with n rows as the cells and m columns as the principal components.}

@@ -4,7 +4,8 @@
 \alias{expectation_step}
 \title{Deterministic annealing expectation}
 \usage{
-expectation_step(pca.components, clusters, parameter.estimates, temp, num.cores)
+expectation_step(pca.components, clusters, parameter.estimates, temp,
+  num.cores)
 }
 \arguments{
 \item{pca.components}{Expects a matrix with n rows as the cells and m columns as the principal components.}
