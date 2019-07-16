@@ -17,6 +17,10 @@ expect_max(pca.components, clusters, parameter.estimates, max.iterations,
 \item{max.iterations}{The maximum number of iterations of the EM}
 
 \item{delta.log.li}{Change in the log likelihood to satisfy convergence}
+
+\item{temp}{Current temperature of the algorithm}
+
+\item{verbose}{Whether to include verbose output}
 }
 \description{
 Wrapper to go between the expectation and maximization steps until the maximum iterations or the convergence of log likelihood

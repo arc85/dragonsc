@@ -17,6 +17,8 @@ expect_max_zero(pca.components, clusters, parameter.estimates,
 \item{max.iterations}{The maximum number of iterations of the EM}
 
 \item{delta.log.li}{Change in the log likelihood to satisfy convergence}
+
+\item{verbose}{Whether to include verbose output}
 }
 \description{
 Wrapper to go between the expectation and maximization steps until the maximum iterations or the convergence of log likelihood

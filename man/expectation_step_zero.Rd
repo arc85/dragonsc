@@ -13,6 +13,8 @@ expectation_step_zero(pca.components, clusters, parameter.estimates,
 \item{clusters}{Expect the most likely cluster assignments}
 
 \item{parameter.estimates}{Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step}
+
+\item{num.cores}{Number of cores used for parallel calculations}
 }
 \description{
 Uses a Euclidean distance metric to determine the distance of each cell from cluster centers, and uses a Gibbs sampler to evaluate the likelihood probability and posterior probability

@@ -10,6 +10,8 @@ initialize_gmm(pca.components, temperature, num.cores)
 \item{pca.components}{Expects a matrix with n rows as the cells and m columns as the principal components.}
 
 \item{temperature}{Initial temperature for annealing.}
+
+\item{num.cores}{Number of cores used in parallel computations}
 }
 \description{
 This function uses PCA components as input, and splits the data into two clusters at a given temperature. It also provides initial parameters for the expectation and maximization.

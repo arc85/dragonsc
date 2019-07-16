@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrapper_function.R
 \name{dragon}
 \alias{dragon}
-\title{Master wrapper for daGMM}
+\title{DRAGON clustering algorithm}
 \usage{
 dragon(pca.components, temp.decay.steps, max.iterations,
   delta.log.likelihood, max.clusters, save.intermediate.files = FALSE,
@@ -11,16 +11,20 @@ dragon(pca.components, temp.decay.steps, max.iterations,
 \arguments{
 \item{pca.components}{Expects a matrix with n rows as the cells and m columns as the principal components.}
 
-\item{max.iterations}{Maximum number of iterations of the EM for each step}
+\item{temp.decay.steps}{Temperature progressed used for the algorithm. Expects a two column data frame, with columns named "step" and "temperature"}
 
-\item{delta.log.likelihood}{Change in the log likelihood between steps of the EM for convergence}
+\item{max.iterations}{Maximum number of iterations of the expectation maximization at each temperature}
+
+\item{delta.log.likelihood}{Change in the log likelihood between steps of the expectation maximization for convergence}
 
 \item{max.clusters}{Maximum number of clusters in the final step of the algorithm}
 
-\item{tsne.coordinates}{Expects a data.frame with two columns (tSNE_1 and tSNE_2, respectively) and rows of cells}
+\item{save.intermediate.files}{Whether to save files at each temperature of the algorithm. Default is FALSE, but can be very informative to view intermediate results.}
 
-\item{decay.step}{Expects a data.frame of two columns, with the first as an index of temperature and the second as the temperatures for the determinisitic annealing}
+\item{num.cores}{Number of cores to use for the algorithm. Uses doParallel as a backend.}
+
+\item{verbose}{Whether to display the current step of the algorithm and the log likelihood for each iteration of the expectation maximization algorithm. Default is FALSE.}
 }
 \description{
-Takes input from the TSNE cluster coordinates, PCA components, decay step, maximum iterations, delta log likelihood for convergence at each step, and the maximum number of resulting clusters
+Takes input from, PCA components, temperature decay steps, maximum iterations, delta log likelihood for convergence at each step, maximum number of resulting clusters, and number of cores for parallelization. Has options for saving intermediate files and for verbose output.
 }
