@@ -9,13 +9,16 @@ Authors@R:
 Description: This package uses a deterministic algorithm inspired by "Deterministic Annealing for Clustering, Compression, Classification, Regression and Related Optimization Problems" in Proceedings of the IEEE, November 1998 by Kenneth Rose. It uses PCA components from single-cell expression and "temperatures" inspired by the physical process of annealing.
 Depends:
 	R (>= 3.4.0),
-	ggplot2 (>= 2.2.0),
 	parallel (>= 3.4.0),
   doParallel (>= 1.0.0)
 Imports:
 	Seurat (>= 2.1.0),
 	grid (>= 3.4.0),
 	irlba (>= 2.3.0)
+Suggests:
+  knitr (>= 1.20),
+  rmarkdown (>= 1.10)
+VignetteBuilder: knitr
 License: CCO
 Encoding: UTF-8
 LazyData: true
