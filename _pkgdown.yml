@@ -15,22 +15,27 @@ navbar:
     reference:
       text: Reference
       href: reference/index.html
-    articles:
-      text: Articles
-      menu:
-      - text: DRAGON
-        href: articles/DRAGON_vignette.html
+    intro:
+      text: Get started
+      href: articles/dragon.html
 
 reference:
-- title: All functions
-  desc: ~
-  contents:
-  - '`cluster_split`'
-  - '`dragon`'
-  - '`expect_max`'
-  - '`expect_max_zero`'
-  - '`expectation_step`'
-  - '`expectation_step_zero`'
-  - '`initialize_gmm`'
-  - '`maximization_step`'
+  - title: Exported function
+    desc: DRAGON exports one function for clustering
+    contents:
+    - dragon
+  - title: Helper functions
+    desc: Functions used under the hood to facilitate clustering
+    contents:
+      - '`cluster_split`'
+      - '`expect_max`'
+      - '`expect_max_zero`'
+      - '`expectation_step`'
+      - '`expectation_step_zero`'
+      - '`initialize_gmm`'
+      - '`maximization_step`'
 
+articles:
+- title: All vignettes
+  desc: ~
+  contents: '`dragon`'
