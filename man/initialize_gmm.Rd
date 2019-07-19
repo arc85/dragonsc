@@ -16,3 +16,4 @@ initialize_gmm(pca.components, temperature, num.cores)
 \description{
 This function uses PCA components as input, and splits the data into two clusters at a given temperature. It also provides initial parameters for the expectation and maximization.
 }
+\keyword{internal}

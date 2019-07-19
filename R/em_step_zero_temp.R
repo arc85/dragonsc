@@ -7,7 +7,7 @@
 #' @param max.iterations The maximum number of iterations of the EM
 #' @param delta.log.li Change in the log likelihood to satisfy convergence
 #' @param verbose Whether to include verbose output
-#' @export
+#' @keywords internal
 
 expect_max_zero <- function(pca.components,clusters,parameter.estimates,max.iterations,delta.log.li,num.cores,verbose) {
 

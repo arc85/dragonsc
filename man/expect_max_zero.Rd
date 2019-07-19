@@ -23,3 +23,4 @@ expect_max_zero(pca.components, clusters, parameter.estimates,
 \description{
 Wrapper to go between the expectation and maximization steps until the maximum iterations or the convergence of log likelihood
 }
+\keyword{internal}

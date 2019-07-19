@@ -6,7 +6,7 @@
 #' @param parameter.estimates Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step
 #' @param num.cores Number of cores used for parallel calculations
 #' @importFrom foreach %dopar%
-#' @export
+#' @keywords internal
 
 expectation_step_zero <- function(pca.components,clusters,parameter.estimates,num.cores) {
 

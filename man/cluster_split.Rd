@@ -23,3 +23,4 @@ cluster_split(pca.components, parameter.estimates, clusters, temperature,
 \description{
 Split clusters into new clusters based on temperature for the deterministic annealing algorithm
 }
+\keyword{internal}

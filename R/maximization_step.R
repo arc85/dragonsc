@@ -8,7 +8,7 @@
 #' @param posteriors Data.frame of priors from the expectation step.
 #' @param num.cores Number of cores used for parallel calculations
 #' @importFrom foreach %dopar%
-#' @export
+#' @keywords internal
 
 maximization_step <- function(pca.components,clusters,parameter.estimates,posteriors,num.cores) {
 

@@ -4,7 +4,7 @@
 #' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.
 #' @param temperature Initial temperature for annealing.
 #' @param num.cores Number of cores used in parallel computations
-#' @export
+#' @keywords internal
 
 initialize_gmm <- function(pca.components,temperature,num.cores) {
 

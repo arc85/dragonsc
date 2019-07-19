@@ -21,3 +21,4 @@ maximization_step(pca.components, clusters, parameter.estimates,
 \description{
 Use the expectation step to generate parameters of the mixture model
 }
+\keyword{internal}

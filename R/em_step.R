@@ -8,7 +8,7 @@
 #' @param delta.log.li Change in the log likelihood to satisfy convergence
 #' @param temp Current temperature of the algorithm
 #' @param verbose Whether to include verbose output
-#' @export
+#' @keywords internal
 
 expect_max <- function(pca.components,clusters,parameter.estimates,max.iterations,delta.log.li,temp,num.cores,verbose) {
 

@@ -21,3 +21,4 @@ expectation_step(pca.components, clusters, parameter.estimates, temp,
 \description{
 Uses a Euclidean distance metric to determine the distance of each cell from cluster centers, and uses a Gibbs sampler to evaluate the likelihood probability and posterior probability
 }
+\keyword{internal}

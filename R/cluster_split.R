@@ -7,7 +7,7 @@
 #' @param temperature Current temperature to use to split clusters
 #' @param decay.step Data.frame with the first column as the step number and the second column as the temperature for that step
 #' @param max.clusters Maximum number of clusters for the dataset
-#' @export
+#' @keywords internal
 
 cluster_split <- function(pca.components,parameter.estimates,clusters,temperature,decay.step,max.clusters,num.cores) {
 	

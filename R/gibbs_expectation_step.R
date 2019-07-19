@@ -7,7 +7,7 @@
 #' @param temp Current temperature of the algorithm
 #' @param num.cores Number of cores used for parallel computation
 #' @importFrom foreach %dopar%
-#' @export
+#' @keywords internal
 
 expectation_step <- function(pca.components,clusters,parameter.estimates,temp,num.cores) {
 
