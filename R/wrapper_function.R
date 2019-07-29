@@ -1,4 +1,4 @@
-#' @title DRAGON clustering algorithm
+#' @title DRAGONsc clustering algorithm
 #'
 #' @description Takes input from, PCA components, temperature decay steps, maximum iterations, delta log likelihood for convergence at each step, maximum number of resulting clusters, and number of cores for parallelization. Has options for saving intermediate files and for verbose output.
 #' @param pca.components Expects a matrix with n rows as the cells and m columns as the principal components.
@@ -11,7 +11,7 @@
 #' @param verbose Whether to display the current step of the algorithm and the log likelihood for each iteration of the expectation maximization algorithm. Default is FALSE.
 #' @export
 
-dragon <- function(pca.components,temp.decay.steps,max.iterations,delta.log.likelihood,max.clusters,save.intermediate.files=FALSE,num.cores,verbose=FALSE) {
+dragonsc <- function(pca.components,temp.decay.steps,max.iterations,delta.log.likelihood,max.clusters,save.intermediate.files=FALSE,num.cores,verbose=FALSE) {
 
 	if (num.cores>1) {
 	cl <- parallel::makeCluster(num.cores)
