@@ -1,14 +1,14 @@
 ---
-title: "DRAGON"
+title: "DRAGONsc"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using DRAGON for scRNAseq clustering}
+  %\VignetteIndexEntry{Using DRAGONsc for scRNAseq clustering}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
-# DRAGON for single-cell RNAseq clustering
+# DRAGONsc for single-cell RNAseq clustering
 
-DeteRminisitic Annealing Gaussian mixture mOdels for clusteriNg (DRAGON) is a clustering algorithm for single-cell RNAseq built upon the statistical framework of Gaussian mixture models and the concept of deterministic annealing. Analagous to the physical process of annealing, DRAGON uses a temperature parameter to put a constraint on the minimum entropy of the clustering solution. At each temperature, DRAGON performs maximum likelihood estimation to ascertain the paramaters of a Gaussian mixture model at that temperature. This allows us to define the "strongest" divisions in the data at higher temperatures, and to reveal more subtle differences as we gradually cool the temperature. This framework also allows us to split clusters in a statistically meaningful way as we reduce the temperature.
+DeteRminisitic Annealing Gaussian mixture mOdels for clusteriNg Single-Cell RNAseq (DRAGONsc) data is a clustering algorithm for single-cell RNAseq built upon the statistical framework of Gaussian mixture models and the concept of deterministic annealing. Analagous to the physical process of annealing, DRAGON uses a temperature parameter to put a constraint on the minimum entropy of the clustering solution. At each temperature, DRAGON performs maximum likelihood estimation to ascertain the paramaters of a Gaussian mixture model at that temperature. This allows us to define the "strongest" divisions in the data at higher temperatures, and to reveal more subtle differences as we gradually cool the temperature. This framework also allows us to split clusters in a statistically meaningful way as we reduce the temperature.
 
 If you're into the math behind this, check out our publication (coming to a journal near you soon), and the great work of Ken Rose.
 
@@ -26,7 +26,7 @@ First, we simulate data to use with splatter. Alternatively we can bypass this s
 ```{r}
 suppressMessages({
 library(splatter)
-library(dragon)
+library(dragonsc)
 library(Seurat)
 })
 
@@ -42,7 +42,7 @@ This will create some simulated data consisting of 6 clusters, with various frac
 
 Now that we've simlulated some data, we will pass it through a standard Seurat workflow (using v2.3.4). Our goal is to generate a principal component analysis, and determine how many principal compnents we will use include for DRAGON cluster. We will also create a TSNE plot to visualize the clusters later.
 
-```{r}
+```{r,fig.width=7,fig.height=7,fig.align="center"}
 #Pass simulated data to Seurat
 ser <- CreateSeuratObject(raw.data=assays(sim.groups)$counts)
 
@@ -72,7 +72,7 @@ ser <- AddMetaData(ser,metadata=data.to.add,col.name="real_id")
 
 With the PCA done, we will now perfrom the DRAGON clustering using the reduced dimensionality of the data. But first, we need to determine a starting temperature.
 
-```{r}
+```{r,fig.width=7,fig.height=3.5,fig.align="center"}
 #Seurat stores PCA results in the dimensionality reduction slot "dr".
 pcs.for.dragon <- ser@dr$pca@cell.embeddings[,1:7]
 
@@ -90,7 +90,7 @@ annealing.steps <- data.frame("step"=cbind(1+c(0:11)),"temperature"=c(int.temp*e
 
 setwd("/Users/arc85/Desktop/")
 
-overall.clustering.soln <- dragon(pca.components=pcs.for.dragon,temp.decay.steps=annealing.steps,max.iterations=20,delta.log.likelihood=1e-6,max.clusters=6,save.intermediate.files=TRUE,num.cores=2,verbose=TRUE)
+overall.clustering.soln <- dragonsc(pca.components=pcs.for.dragon,temp.decay.steps=annealing.steps,max.iterations=20,delta.log.likelihood=1e-6,max.clusters=6,save.intermediate.files=TRUE,num.cores=2,verbose=TRUE)
 
 #Add our results back into the Seurat object
 drag.clust <- overall.clustering.soln[["clusters"]]
@@ -107,7 +107,7 @@ plot_grid(p1,p2)
 
 Congratulations! You have performed your first clustering with DRAGON. Note that the clusters don't align by name. Let's fix that with BuildClusterTree in Seurat.
 
-```{r}
+```{r,fig.width=7,fig.height=3.5,fig.align="center"}
 ser <- SetAllIdent(ser,id="real_id")
 ser <- BuildClusterTree(ser,do.reorder=T,reorder.numeric=T,do.plot=FALSE,show.progress=FALSE)
 ser@meta.data$real_id <- ser@meta.data$tree.ident
@@ -134,7 +134,7 @@ caret::confusionMatrix(data=as.factor(ser@meta.data$DRAGON),reference=as.factor(
 
 If you've chosen to save the intermediate results (as we have here by setting save.intermediate.results=TRUE), you can check out how clusters form as the temperature of the system is reduced. Annealing is cool! (Pun intended)
 
-```{r}
+```{r,fig.width=7,fig.height=7,fig.align="center"}
 setwd("/Users/arc85/Desktop/dragon_intermediate_files")
 
 temp.60 <- readRDS("em_results_temp_60.RDS")
@@ -158,6 +158,8 @@ ser <- AddMetaData(ser,metadata=drag.clust,col.name="temp_1")
 p3 <- TSNEPlot(ser,group.by="temp_60",do.return=T) + ggtitle("Temperature 60")
 p4 <- TSNEPlot(ser,group.by="temp_4",do.return=T) + ggtitle("Temperature 4")
 p5 <- TSNEPlot(ser,group.by="temp_1",do.return=T) + ggtitle("Temperature 1")
+p6 <- TSNEPlot(ser,group.by="DRAGON",do.return=T) +
+ggtitle("Temperature 0")
 
-plot_grid(p3,p4,p5,p2,ncol=2)
+plot_grid(p3,p4,p5,p6,ncol=2)
 ```
