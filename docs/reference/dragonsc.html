@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EM step of the algorithm — expect_max_zero • dragonsc</title>
+<title>DRAGONsc clustering algorithm — dragonsc • dragonsc</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="EM step of the algorithm — expect_max_zero" />
+<meta property="og:title" content="DRAGONsc clustering algorithm — dragonsc" />
 
-<meta property="og:description" content="Wrapper to go between the expectation and maximization steps until the maximum iterations or the convergence of log likelihood" />
+<meta property="og:description" content="Takes input from, PCA components, temperature decay steps, maximum iterations, delta log likelihood for convergence at each step, maximum number of resulting clusters, and number of cores for parallelization. Has options for saving intermediate files and for verbose output." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -100,19 +100,20 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>EM step of the algorithm</h1>
+    <h1>DRAGONsc clustering algorithm</h1>
     
-    <div class="hidden name"><code>expect_max_zero.Rd</code></div>
+    <div class="hidden name"><code>dragonsc.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Wrapper to go between the expectation and maximization steps until the maximum iterations or the convergence of log likelihood</p>
+    <p>Takes input from, PCA components, temperature decay steps, maximum iterations, delta log likelihood for convergence at each step, maximum number of resulting clusters, and number of cores for parallelization. Has options for saving intermediate files and for verbose output.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>expect_max_zero</span>(<span class='no'>pca.components</span>, <span class='no'>clusters</span>, <span class='no'>parameter.estimates</span>,
-  <span class='no'>max.iterations</span>, <span class='no'>delta.log.li</span>, <span class='no'>num.cores</span>, <span class='no'>verbose</span>)</pre>
+    <pre class="usage"><span class='fu'>dragonsc</span>(<span class='no'>pca.components</span>, <span class='no'>temp.decay.steps</span>, <span class='no'>max.iterations</span>,
+  <span class='no'>delta.log.likelihood</span>, <span class='no'>max.clusters</span>, <span class='kw'>save.intermediate.files</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>num.cores</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -122,24 +123,32 @@
       <td><p>Expects a matrix with n rows as the cells and m columns as the principal components.</p></td>
     </tr>
     <tr>
-      <th>clusters</th>
-      <td><p>Expect the most likely cluster assignments</p></td>
-    </tr>
-    <tr>
-      <th>parameter.estimates</th>
-      <td><p>Expects a list of parameters (mu, covariance, and weights) from initialize_gmm or maximization_step</p></td>
+      <th>temp.decay.steps</th>
+      <td><p>Temperature progressed used for the algorithm. Expects a two column data frame, with columns named "step" and "temperature"</p></td>
     </tr>
     <tr>
       <th>max.iterations</th>
-      <td><p>The maximum number of iterations of the EM</p></td>
+      <td><p>Maximum number of iterations of the expectation maximization at each temperature</p></td>
     </tr>
     <tr>
-      <th>delta.log.li</th>
-      <td><p>Change in the log likelihood to satisfy convergence</p></td>
+      <th>delta.log.likelihood</th>
+      <td><p>Change in the log likelihood between steps of the expectation maximization for convergence</p></td>
+    </tr>
+    <tr>
+      <th>max.clusters</th>
+      <td><p>Maximum number of clusters in the final step of the algorithm</p></td>
+    </tr>
+    <tr>
+      <th>save.intermediate.files</th>
+      <td><p>Whether to save files at each temperature of the algorithm. Default is FALSE, but can be very informative to view intermediate results.</p></td>
+    </tr>
+    <tr>
+      <th>num.cores</th>
+      <td><p>Number of cores to use for the algorithm. Uses doParallel as a backend.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Whether to include verbose output</p></td>
+      <td><p>Whether to display the current step of the algorithm and the log likelihood for each iteration of the expectation maximization algorithm. Default is FALSE.</p></td>
     </tr>
     </table>
     

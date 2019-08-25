@@ -9,7 +9,7 @@
 This package uses a deterministic algorithm inspired by "Deterministic Annealing for Clustering, Compression, Classification, Regression and Related Optimization Problems" in Proceedings of the IEEE, November 1998 by Kenneth Rose. It uses PCA components from single-cell expression and "temperatures" inspired by the physical process of annealing.
 }
 \author{
-\strong{Maintainer}: Anthony Cillo \email{arc85@pitt.edu}
+\strong{Maintainer}: Anthony Cillo \email{arc85@pitt.edu} (0000-0002-3213-3129)
 
 }
 \keyword{internal}
