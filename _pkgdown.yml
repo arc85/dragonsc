@@ -21,9 +21,9 @@ navbar:
 
 reference:
   - title: Exported function
-    desc: DRAGON exports one function for clustering
+    desc: dragonsc exports one function for clustering
     contents:
-    - dragon
+    - dragonsc
   - title: Helper functions
     desc: Functions used under the hood to facilitate clustering
     contents:
@@ -38,4 +38,4 @@ reference:
 articles:
 - title: All vignettes
   desc: ~
-  contents: '`dragon`'
+  contents: '`dragonsc`'
