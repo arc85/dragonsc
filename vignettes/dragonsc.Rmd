@@ -1,12 +1,12 @@
 ---
-title: "DRAGONsc"
+title: "dragonsc"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using DRAGONsc for scRNAseq clustering}
+  %\VignetteIndexEntry{Using dragonsc for scRNAseq clustering}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
-# DRAGONsc for single-cell RNAseq clustering
+# dragonsc for single-cell RNAseq clustering
 
 DeteRminisitic Annealing Gaussian mixture mOdels for clusteriNg Single-Cell RNAseq (DRAGONsc) data is a clustering algorithm for single-cell RNAseq built upon the statistical framework of Gaussian mixture models and the concept of deterministic annealing. Analagous to the physical process of annealing, DRAGON uses a temperature parameter to put a constraint on the minimum entropy of the clustering solution. At each temperature, DRAGON performs maximum likelihood estimation to ascertain the paramaters of a Gaussian mixture model at that temperature. This allows us to define the "strongest" divisions in the data at higher temperatures, and to reveal more subtle differences as we gradually cool the temperature. This framework also allows us to split clusters in a statistically meaningful way as we reduce the temperature.
 
