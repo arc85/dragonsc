@@ -11,3 +11,7 @@ library(devtools)
 install_github("arc85/dragonsc")
 library(dragonsc)
 ```
+
+## Additional information
+
+For more information and the dragonsc vignette, check out the dragonsc website <https://arc85.github.io/dragonsc/>.
